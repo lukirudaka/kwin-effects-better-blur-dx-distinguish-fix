@@ -15,7 +15,7 @@ Better Blur is a fork of the Plasma 6 blur effect with additional features and b
 Fixes for blur-related Plasma bugs that haven't been patched yet.
 
 - Blur may sometimes disappear during animations
-- [Transparent color schemes don't work properly with the Breeze application style](https://github.com/taj-ny/kwin-effects-forceblur/pull/38)
+- [Transparent color schemes don't work properly with the Breeze application style](https://github.com/taj-ny/kwin-effects-better_blur_dx/pull/38)
 
 ### Support for previous Plasma releases
 Better Blur will usually support at least one previous Plasma release (second number in version - 6.x). Exceptions may be made if there is a large amount of breaking 
@@ -24,8 +24,8 @@ changes.
 Currently supported versions: **6.4**
 
 Latest Better Blur versions for previous Plasma releases:
-- **6.0.0 - 6.3.5**: [v1.3.6](https://github.com/taj-ny/kwin-effects-forceblur/releases/tag/v1.3.6),
-[fea9f80f27389aa8a62befb5babf40b28fed328d](https://github.com/taj-ny/kwin-effects-forceblur/tree/fea9f80f27389aa8a62befb5babf40b28fed328d)
+- **6.0.0 - 6.3.5**: [v1.3.6](https://github.com/taj-ny/kwin-effects-better_blur_dx/releases/tag/v1.3.6),
+[fea9f80f27389aa8a62befb5babf40b28fed328d](https://github.com/taj-ny/kwin-effects-better_blur_dx/tree/fea9f80f27389aa8a62befb5babf40b28fed328d)
 
 # Installation
 > [!IMPORTANT]
@@ -38,9 +38,9 @@ Latest Better Blur versions for previous Plasma releases:
 
   **Choose *cleanBuild* when reinstalling the package.**
 
-  https://aur.archlinux.org/packages/kwin-effects-forceblur
+  https://aur.archlinux.org/packages/kwin-effects-better_blur_dx
   ```
-  yay -S kwin-effects-forceblur
+  yay -S kwin-effects-better_blur_dx
   ```
 </details>
 <details>
@@ -53,8 +53,8 @@ Latest Better Blur versions for previous Plasma releases:
     inputs = {
       nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-      kwin-effects-forceblur = {
-        url = "github:taj-ny/kwin-effects-forceblur";
+      kwin-effects-better_blur_dx = {
+        url = "github:taj-ny/kwin-effects-better_blur_dx";
         inputs.nixpkgs.follows = "nixpkgs";
       };
     };
@@ -66,8 +66,8 @@ Latest Better Blur versions for previous Plasma releases:
 
   {
     environment.systemPackages = [
-      inputs.kwin-effects-forceblur.packages.${pkgs.system}.default # Wayland
-      inputs.kwin-effects-forceblur.packages.${pkgs.system}.x11 # X11
+      inputs.kwin-effects-better_blur_dx.packages.${pkgs.system}.default # Wayland
+      inputs.kwin-effects-better_blur_dx.packages.${pkgs.system}.x11 # X11
     ];
   }
   ```
@@ -78,10 +78,10 @@ Latest Better Blur versions for previous Plasma releases:
 
   **This package is usually built against the latest version of KWin available in Fedora's official repositories, with a delay of up to 24 hours due to Fedora's update mechanism using bodhi. If you use a beta/testing/copr/advisory version of KWin, the effect may not work. In that case, you need to either recompile the effect using the instructions below, or rebuild the SRPM using `rpmbuild --rebuild /path/to/srpm.src.rpm`. Uninstall the rpm of the effect before attempting your build.**
 
-  [Repository](https://copr.fedorainfracloud.org/coprs/hazel-bunny/ricing/package/kwin-effects-forceblur/)
+  [Repository](https://copr.fedorainfracloud.org/coprs/hazel-bunny/ricing/package/kwin-effects-better_blur_dx/)
   ```
   sudo dnf copr enable hazel-bunny/ricing
-  sudo dnf install --refresh kwin-effects-forceblur
+  sudo dnf install --refresh kwin-effects-better_blur_dx
   ```
 </details>
 
@@ -161,8 +161,8 @@ Latest Better Blur versions for previous Plasma releases:
 
 ### Building
 ```sh
-git clone https://github.com/taj-ny/kwin-effects-forceblur
-cd kwin-effects-forceblur
+git clone https://github.com/taj-ny/kwin-effects-better_blur_dx
+cd kwin-effects-better_blur_dx
 mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr
@@ -176,15 +176,15 @@ sudo make install
 
   ```sh
   # enter container
-  git clone https://github.com/taj-ny/kwin-effects-forceblur
-  cd kwin-effects-forceblur
+  git clone https://github.com/taj-ny/kwin-effects-better_blur_dx
+  cd kwin-effects-better_blur_dx
   mkdir build
   cd build
   cmake .. -DCMAKE_INSTALL_PREFIX=/usr
   make -j$(nproc)
   cpack -V -G RPM
   exit # exit container
-  sudo rpm-ostree install kwin-effects-forceblur/build/kwin-better-blur.rpm
+  sudo rpm-ostree install kwin-effects-better_blur_dx/build/kwin-better-blur.rpm
   ```
 </details>
 
@@ -198,7 +198,7 @@ This effect will conflict with the stock blur effect and any other forks of it.
 3. Disable any blur effects.
 4. Enable the *Better Blur* effect.
 
-For more detailed descriptions of some options, check out [this wiki page](https://github.com/taj-ny/kwin-effects-forceblur/wiki/Configuration).
+For more detailed descriptions of some options, check out [this wiki page](https://github.com/taj-ny/kwin-effects-better_blur_dx/wiki/Configuration).
 
 ### Window transparency
 The window needs to be translucent in order for the blur to be visible. This can be done in multiple ways:
