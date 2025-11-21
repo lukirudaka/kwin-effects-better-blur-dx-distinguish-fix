@@ -20,7 +20,6 @@
 
 #include <unordered_map>
 
-
 namespace KWin
 {
 
@@ -91,11 +90,14 @@ public Q_SLOTS:
     void slotScreenAdded(KWin::Output *screen);
     void slotScreenRemoved(KWin::Output *screen);
     void slotViewRemoved(KWin::RenderView *view);
+#ifdef BETTERBLUR_X11
     void slotPropertyNotify(KWin::EffectWindow *w, long atom);
+#endif
     void setupDecorationConnections(EffectWindow *w);
 
 private:
     void initBlurStrengthValues();
+    QMatrix4x4 colorMatrix(const BlurEffectData &params) const;
     QRegion blurRegion(EffectWindow *w) const;
     QRegion decorationBlurRegion(const EffectWindow *w) const;
     bool decorationSupportsBlurBehind(const EffectWindow *w) const;
@@ -103,7 +105,6 @@ private:
     bool shouldForceBlur(const EffectWindow *w) const;
     void updateBlurRegion(EffectWindow *w, bool geometryChanged = false);
     bool hasStaticBlur(EffectWindow *w);
-    QMatrix4x4 colorMatrix(const BlurEffectData &params) const;
 
     /*
      * @param w The pointer to the window being blurred, nullptr if an image is being blurred.
@@ -216,7 +217,9 @@ private:
     } m_texture;
 
     bool m_valid = false;
+#ifdef BETTERBLUR_X11
     long net_wm_blur_region = 0;
+#endif
     QRegion m_paintedArea; // keeps track of all painted areas (from bottom to top)
     QRegion m_currentBlur; // keeps track of currently blurred area of the windows (from bottom to top)
     RenderView *m_currentView = nullptr;
