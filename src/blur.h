@@ -25,6 +25,7 @@ namespace KWin
 {
 
 class BlurManagerInterface;
+class ContrastManagerInterface;
 
 struct BlurRenderData
 {
@@ -99,7 +100,7 @@ private:
     bool shouldForceBlur(const EffectWindow *w) const;
     void updateBlurRegion(EffectWindow *w, bool geometryChanged = false);
     bool hasStaticBlur(EffectWindow *w);
-    QMatrix4x4 colorMatrix(const float &brightness, const float &saturation, const float &contrast) const;
+    QMatrix4x4 colorMatrix(qreal contrast, qreal saturation, qreal brightness);
 
     /*
      * @param w The pointer to the window being blurred, nullptr if an image is being blurred.
@@ -140,10 +141,29 @@ private:
     {
         std::unique_ptr<GLShader> shader;
         int mvpMatrixLocation;
+        int colorMatrixLocation;
         int offsetLocation;
         int halfpixelLocation;
-        int transformColorsLocation;
+    } m_contrastPass;
+
+    struct
+    {
+        std::unique_ptr<GLShader> shader;
+        int mvpMatrixLocation;
         int colorMatrixLocation;
+        int offsetLocation;
+        int halfpixelLocation;
+        int boxLocation;
+        int cornerRadiusLocation;
+        int opacityLocation;
+    } m_roundedContrastPass;
+
+    struct
+    {
+        std::unique_ptr<GLShader> shader;
+        int mvpMatrixLocation;
+        int offsetLocation;
+        int halfpixelLocation;
     } m_downsamplePass;
 
     struct
@@ -223,8 +243,6 @@ private:
     // Windows to blur even when transformed.
     QList<const EffectWindow*> m_blurWhenTransformed;
 
-    QMatrix4x4 m_colorMatrix;
-
     QMap<EffectWindow *, QMetaObject::Connection> windowBlurChangedConnections;
     QMap<EffectWindow *, QMetaObject::Connection> windowFrameGeometryChangedConnections;
     QMap<Output *, QMetaObject::Connection> screenChangedConnections;
@@ -241,6 +259,9 @@ private:
 
     static BlurManagerInterface *s_blurManager;
     static QTimer *s_blurManagerRemoveTimer;
+
+    static ContrastManagerInterface *s_contrastManager;
+    static QTimer *s_contrastManagerRemoveTimer;
 };
 
 inline bool BlurEffect::provides(Effect::Feature feature)
