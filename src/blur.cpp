@@ -48,6 +48,8 @@
 #include <optional>
 #include <utility>
 
+#define BETTERBLUR_NOT_NEEDED 0
+
 Q_LOGGING_CATEGORY(KWIN_BLUR, "kwin_better_blur_dx", QtWarningMsg)
 
 static void ensureResources()
@@ -382,6 +384,7 @@ void BlurEffect::updateBlurRegion(EffectWindow *w, bool geometryChanged)
     }
 #endif
 
+#if BETTERBLUR_NOT_NEEDED
     if (SurfaceInterface *surface = w->surface()) {
         if (surface->blur()) {
             content = surface->blur()->region();
@@ -402,6 +405,7 @@ void BlurEffect::updateBlurRegion(EffectWindow *w, bool geometryChanged)
     if (w->decorationHasAlpha() && decorationSupportsBlurBehind(w)) {
         frame = decorationBlurRegion(w);
     }
+#endif
 
     // Don't override blur region for menus that already have one. The window geometry could include shadows.
     if (shouldForceBlur(w) && !((isMenu(w) || w->isTooltip()) && (content.has_value() || geometryChanged))) {

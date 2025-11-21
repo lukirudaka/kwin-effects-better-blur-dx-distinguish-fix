@@ -1,5 +1,7 @@
 #pragma once
 
+#include "effect/effectwindow.h"
+
 namespace KWin
 {
 
