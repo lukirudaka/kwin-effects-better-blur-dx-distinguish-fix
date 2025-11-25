@@ -168,8 +168,7 @@ sudo make install
 **Remove the *build* directory when rebuilding the effect.**
 
 # Usage
-This effect (by default) should not conflict with the stock blur effect
-because we only blur surfaces explicitly added to a whitelist.
+This effect conflicts with the default KWin blur effect (and other effects replacing it).
 
 1. Install the plugin.
 2. Open the *Desktop Effects* page in *System Settings*.

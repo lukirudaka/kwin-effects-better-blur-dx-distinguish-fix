@@ -349,7 +349,6 @@ void BlurEffect::updateBlurRegion(EffectWindow *w, bool geometryChanged)
     }
 #endif
 
-#if BETTERBLUR_NOT_NEEDED
     if (SurfaceInterface *surface = w->surface()) {
         if (surface->blur()) {
             content = surface->blur()->region();
@@ -370,7 +369,6 @@ void BlurEffect::updateBlurRegion(EffectWindow *w, bool geometryChanged)
     if (w->decorationHasAlpha() && decorationSupportsBlurBehind(w)) {
         frame = decorationBlurRegion(w);
     }
-#endif
 
     // Don't override blur region for menus that already have one. The window geometry could include shadows.
     if (shouldForceBlur(w) && !((isMenu(w) || w->isTooltip()) && (content.has_value() || geometryChanged))) {
