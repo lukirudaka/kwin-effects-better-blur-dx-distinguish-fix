@@ -28,13 +28,11 @@ BlurEffectConfig::BlurEffectConfig(QObject *parent, const KPluginMetaData &data)
     BlurConfig::instance("kwinrc");
     addConfig(BlurConfig::self(), widget());
 
-    connect(ui.staticBlurImagePicker, &QPushButton::clicked, this, &BlurEffectConfig::slotStaticBlurImagePickerClicked);
-
     QFile about(":/effects/better_blur_dx/kcm/about.html");
     if (about.open(QIODevice::ReadOnly)) {
         const auto html = about.readAll()
             .replace("${version}", ABOUT_VERSION_STRING)
-            .replace("${repo}", "https://github.com/taj-ny/kwin-effects-better_blur_dx");
+            .replace("${repo}", "https://github.com/xarblu/kwin-effects-better-blur-dx");
         ui.aboutText->setHtml(html);
     }
 
@@ -43,16 +41,6 @@ BlurEffectConfig::BlurEffectConfig(QObject *parent, const KPluginMetaData &data)
 
 BlurEffectConfig::~BlurEffectConfig()
 {
-}
-
-void BlurEffectConfig::slotStaticBlurImagePickerClicked()
-{
-    const auto imagePath = QFileDialog::getOpenFileName(widget(), "Select image", {}, "Images (*.png *.jpg *.jpeg *.bmp)");
-    if (imagePath.isNull()) {
-        return;
-    }
-
-    ui.kcfg_FakeBlurImage->setText(imagePath);
 }
 
 void BlurEffectConfig::setContextualHelp(

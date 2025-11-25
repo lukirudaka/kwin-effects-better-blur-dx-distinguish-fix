@@ -87,8 +87,6 @@ public:
 public Q_SLOTS:
     void slotWindowAdded(KWin::EffectWindow *w);
     void slotWindowDeleted(KWin::EffectWindow *w);
-    void slotScreenAdded(KWin::Output *screen);
-    void slotScreenRemoved(KWin::Output *screen);
     void slotViewRemoved(KWin::RenderView *view);
 #ifdef BETTERBLUR_X11
     void slotPropertyNotify(KWin::EffectWindow *w, long atom);
@@ -104,7 +102,6 @@ private:
     bool shouldBlur(const EffectWindow *w, int mask, const WindowPaintData &data);
     bool shouldForceBlur(const EffectWindow *w) const;
     void updateBlurRegion(EffectWindow *w, bool geometryChanged = false);
-    bool hasStaticBlur(EffectWindow *w);
 
     /*
      * @param w The pointer to the window being blurred, nullptr if an image is being blurred.
@@ -112,12 +109,6 @@ private:
     void blur(const RenderTarget &renderTarget, const RenderViewport &viewport, EffectWindow *w, int mask, const QRegion &region, WindowPaintData &data);
     void blur(GLTexture *texture);
 
-    /**
-     * @param output Can be nullptr.
-     * @remark This method shall not be called outside of BlurEffect::blur.
-     * @return The cached static blur texture. The texture will be created if it doesn't exist.
-     */
-    GLTexture *ensureStaticBlurTexture(const Output *screen, const RenderTarget &renderTarget);
     GLTexture *ensureNoiseTexture();
 
     /**
@@ -126,19 +117,6 @@ private:
      * occurred. The texture will contain icons and widgets, if there are any.
      */
     GLTexture *wallpaper(EffectWindow *desktop, const qreal &scale, const GLenum &textureFormat);
-
-    /**
-     * Creates a static blur texture for the specified screen.
-     * @remark This method shall not be called outside of BlurEffect::blur.
-     * @return A pointer to the texture, or nullptr if an error occurred.
-     */
-    GLTexture *createStaticBlurTextureWayland(const Output *screen, const RenderTarget &renderTarget, const GLenum &textureFormat);
-
-    /**
-     * Creates a composite static blur texture containing images for all screens.
-     * @return A pointer to the texture, or nullptr if an error occurred.
-     */
-    GLTexture *createStaticBlurTextureX11(const GLenum &textureFormat);
 
 private:
     struct
@@ -212,20 +190,6 @@ private:
         int refractionTextureRepeatModeLocation;
     } m_refractionPass;
 
-    struct
-    {
-        std::unique_ptr<GLShader> shader;
-        int mvpMatrixLocation;
-        int textureSizeLocation;
-        int texStartPosLocation;
-
-        int topCornerRadiusLocation;
-        int bottomCornerRadiusLocation;
-        int antialiasingLocation;
-        int blurSizeLocation;
-        int opacityLocation;
-    } m_texture;
-
     bool m_valid = false;
 #ifdef BETTERBLUR_X11
     long net_wm_blur_region = 0;
@@ -258,8 +222,6 @@ private:
 
     QList<BlurValuesStruct> blurStrengthValues;
 
-    std::unordered_map<const Output*, std::unique_ptr<GLTexture>> m_staticBlurTextures;
-
     // Windows to blur even when transformed.
     QList<const EffectWindow*> m_blurWhenTransformed;
 
@@ -268,15 +230,6 @@ private:
     QMap<EffectWindow *, QMetaObject::Connection> windowFrameGeometryChangedConnections;
     QMap<Output *, QMetaObject::Connection> screenChangedConnections;
     std::unordered_map<EffectWindow *, BlurEffectData> m_windows;
-
-    /**
-     * Stores all currently open windows, even those that aren't blurred. Used for determining whether windows are
-     * overlapping.
-     *
-     * Objects retrieved from effects->stackingOrder() and workspace()->stackingOrder() appear to be deleted when
-     * BlurEffect::prePaintWindow is running, so that can't be used.
-     */
-    std::vector<EffectWindow *> m_allWindows;
 
     static BlurManagerInterface *s_blurManager;
     static QTimer *s_blurManagerRemoveTimer;

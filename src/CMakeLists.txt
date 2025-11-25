@@ -7,8 +7,6 @@ function(replace_shader_include input output)
     file(WRITE "${output}" "${SHADER}")
 endfunction()
 
-replace_shader_include(shaders/texture.glsl shaders/texture.frag)
-replace_shader_include(shaders/texture_core.glsl shaders/texture_core.frag)
 replace_shader_include(shaders/upsample.glsl shaders/upsample.frag)
 replace_shader_include(shaders/upsample_core.glsl shaders/upsample_core.frag)
 replace_shader_include(shaders/refraction.glsl shaders/refraction.frag)
