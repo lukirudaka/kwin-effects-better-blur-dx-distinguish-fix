@@ -43,6 +43,7 @@
 
 #include <KDecoration3/Decoration>
 
+#include <algorithm>
 #include <memory>
 #include <optional>
 #include <utility>
@@ -175,6 +176,7 @@ BlurEffect::BlurEffect()
 #endif
 
     connect(effects, &EffectsHandler::windowAdded, this, &BlurEffect::slotWindowAdded);
+    connect(effects, &EffectsHandler::windowClosed, this, &BlurEffect::slotWindowClosed);
     connect(effects, &EffectsHandler::windowDeleted, this, &BlurEffect::slotWindowDeleted);
     connect(effects, &EffectsHandler::viewRemoved, this, &BlurEffect::slotViewRemoved);
 #ifdef BETTERBLUR_X11
@@ -435,6 +437,29 @@ void BlurEffect::slotWindowAdded(EffectWindow *w)
     });
 
     updateBlurRegion(w);
+}
+
+void BlurEffect::slotWindowClosed(EffectWindow *w)
+{
+    /*
+     * Some windows (e.g. the foot terminal) like to
+     * close by simply deleting themselves.
+     * This causes e.g. the "scale" window close effect
+     * to blur and apply contrast to a fully transparent area.
+     *
+     * With modified contrast/saturation this at best looks bad
+     * and at worst causes a blinding flash with bright background surfaces.
+     * Clamp them to mostly work around the issue.
+     */
+    if (w->isDeleted()) {
+        BlurEffectData &data = m_windows[w];
+
+        const qreal saturation = data.saturation.value_or(m_settings.general.saturation);
+        data.saturation = std::min(saturation, 1.0);
+
+        const qreal contrast = data.contrast.value_or(m_settings.general.contrast);
+        data.contrast = std::min(contrast, 1.0);
+    }
 }
 
 void BlurEffect::slotWindowDeleted(EffectWindow *w)
